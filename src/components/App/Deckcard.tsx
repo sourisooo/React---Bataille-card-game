@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 function Deckcard() {
 
-    const {deck, player, adversaire, outofthedeck, gameover} = useSelector((store:any) => store.deck);
+    const {deck, player, adversaire, outofthedeck, gameover, discard, adversaireindex, exchange} = useSelector((store:any) => store.deck);
 
     const [hidden,sethidden] = useState(true);
 
@@ -42,6 +42,8 @@ function Deckcard() {
 
       dispatch({type:'GETCARD', payload:choosecard[0]});
 
+      dispatch({type:'RETURNTODECK', payload:player[0]});
+      
   
       let randomcardindex2 = random();
   
@@ -49,8 +51,16 @@ function Deckcard() {
   
       dispatch({type:'ADVGETCARD', payload:randomcard2[0]});
 
-      dispatch({type:'SHUFFLECARD'});}
+      dispatch({type:'ORDERCARD'});
 
+      let weakestadvcard = adversaire.filter(e => e.index ==adversaireindex[0]);
+
+      dispatch({type:'ADVRETURNTODECK', payload:weakestadvcard[0]});
+
+      dispatch({type:'SHUFFLECARD'});
+
+      
+    }
 
     }
 
@@ -70,7 +80,7 @@ function Deckcard() {
   const checkgamestate = () => {
   
     console.log(deck.length);
-   if(deck.length<2){sethidden(true), dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'), window.location.reload()} 
+    if((deck.length<2)||(discard>8)||(exchange>8)){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'),window.location.reload()} 
 
   }
   
@@ -84,7 +94,7 @@ function Deckcard() {
 
     <button type="button" onClick={toggle}>hide/reveal card</button>
 
-    <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap', maxWidth:'100vw'}} onClick={throwalert}>
+    <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap', maxWidth:'100vw', justifyContent:'center'}} onClick={throwalert}>
 
 
     {deck.map(card => (
@@ -104,7 +114,7 @@ function Deckcard() {
 
       <button type="button" onClick={toggle}>hide/reveal card</button>
   
-      <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap', maxWidth:'100vw'}} onClick={choosecard}>
+      <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap', maxWidth:'100vw', justifyContent:'center'}} onClick={choosecard}>
   
   
       {deck.map(card => (
