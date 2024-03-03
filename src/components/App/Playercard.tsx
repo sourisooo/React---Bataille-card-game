@@ -7,7 +7,7 @@ import { useState } from "react";
 
 function Playercard() {
 
-    const {deck, player, adversaire, outofthedeck, gameover} = useSelector((store:any) => store.deck)
+    const {deck, player, adversaire, outofthedeck, gameover, discard, adversaireindex, exchange} = useSelector((store:any) => store.deck)
 
     const dispatch = useDispatch();
 
@@ -28,7 +28,13 @@ function Playercard() {
 
       dispatch({type:'THROWCARD', payload:playercardthrow[0]});
 
-      dispatch({type:'ADVTHROWCARD', payload:adversaire[0]})
+      dispatch({type:'ORDERCARD'});
+
+        let weakestadvcard = adversaire.filter(e => e.index ==adversaireindex[0]);
+
+        console.log(weakestadvcard[0], adversaireindex);
+
+      dispatch({type:'ADVTHROWCARD', payload:weakestadvcard[0]})
 
       
       console.log(outofthedeck);}
@@ -39,14 +45,14 @@ function Playercard() {
     const checkgamestate = () => {
   
     console.log(deck.length);
-   if(deck.length<2){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'), window.location.reload()} 
+    if((deck.length<2)||(discard>8)||(exchange>8)){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'),window.location.reload()} 
 
   }
 
 
   return (
 
-    <div style={{display:'flex', flexDirection:'row'}} onClick={throwthecard}>
+    <div style={{display:'flex', flexDirection:'row', flexWrap:'wrap', maxWidth:'100vw', justifyContent:'center'}} onClick={throwthecard}>
 
 
     {player.map(card => (
