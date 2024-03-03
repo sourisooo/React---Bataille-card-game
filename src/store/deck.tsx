@@ -7,6 +7,7 @@ const initialState = {
     player:[],
     adversaire:[],
     outofthedeck:[],
+    gameover:false,
 
 };
 
@@ -28,7 +29,7 @@ const deck: Reducer<any> = (
       return {
         ...state,
         deck: [...state.deck.filter(e => { return e.index != action.payload.index; console.log(e.index)})],
-        player: [...state.player, action.payload],
+        player: [...state.player, action.payload].sort((a,b) => a.number - b.number),
         outofthedeck: [...state.outofthedeck, action.payload.index],
       };
 
@@ -44,7 +45,7 @@ const deck: Reducer<any> = (
         case 'THROWCARD':
             return {
               ...state,
-              player: [...state.player.filter(e => { return e.index != action.payload.index; console.log(e.index)})],
+              player: [...state.player.filter(e => { return e.index != action.payload.index; console.log(e.index)})].sort((a,b) => a.number - b.number),
               deck: [...state.deck, action.payload],
               outofthedeck: [...state.outofthedeck.filter(e => { return e != action.payload.index; console.log(e.index)})],
             };
@@ -52,7 +53,7 @@ const deck: Reducer<any> = (
             case 'ADVTHROWCARD':
                 return {
                   ...state,
-                  adversaire: [...state.adversaire.filter(e => { return e.index != action.payload.index; console.log(e.index)})],
+                  adversaire: [...state.adversaire.filter(e => { return e.index != action.payload.index; console.log(e.index)})].sort((a,b) => a.number - b.number),
                   deck: [...state.deck, action.payload],
                   outofthedeck: [...state.outofthedeck.filter(e => { return e != action.payload.index; console.log(e.index)})],
                 };
@@ -64,7 +65,52 @@ const deck: Reducer<any> = (
                       deck: initialState.deck,
                       outofthedeck: initialState.outofthedeck,
                       player: initialState.player,
+                      gameover:false,
                     };
+
+
+                    case 'ECHANGECARDPART1':
+                      return {
+                        ...state,
+                        adversaire: [...state.adversaire.filter(e => { return e.index != action.payload.index; console.log(e.index)}).sort((a,b) => a.number - b.number)],
+                        player: [...state.player, action.payload].sort((a,b) => a.number - b.number),
+  
+                      };
+
+                      case 'ECHANGECARDPART2':
+                        return {
+                          ...state,
+                          player: [...state.player.filter(e => { return e.index != action.payload.index; console.log(e.index)})].sort((a,b) => a.number - b.number),
+                          adversaire: [...state.adversaire, action.payload].sort((a,b) => a.number - b.number),
+    
+                        };
+
+                        case 'SHUFFLECARD':
+                          return {
+                            ...state,
+          
+                            adversaire: [...state.adversaire].sort(() => Math.random() - 0.5),
+                            deck: [...state.deck].sort(() => Math.random() - 0.5),
+      
+                          };
+
+                          case 'ORDERCARD':
+                            return {
+                              ...state,
+                              player: [...state.player].sort((a,b) => a.number - b.number),
+                              adversaire: [...state.adversaire].sort((a,b) => a.number - b.number),
+                              deck: [...state.deck].sort((a,b) => a.number - b.number),
+        
+                            };
+
+                            case 'GAMEOVER':
+                              return {
+                                ...state,
+                                gameover:true,
+          
+                              };
+        
+      
 
 
     default:
