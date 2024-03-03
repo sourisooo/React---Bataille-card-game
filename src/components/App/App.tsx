@@ -5,11 +5,12 @@ import './App.scss';
 import Playercard from './Playercard';
 import Deckcard from './Deckcard';
 import Adversaire from './Adversaire';
+import { useEffect, useState } from 'react';
 
 function App() {
 
 
-  const {deck, player, adversaire, outofthedeck} = useSelector((store:any) => store.deck)
+  const {deck, player, adversaire, outofthedeck, gameover} = useSelector((store:any) => store.deck)
 
   const dispatch = useDispatch();
 
@@ -24,6 +25,10 @@ function App() {
       }
  
   const getcard = () => {
+
+    checkgamestate();
+
+    if (gameover==false){
 
     let randomcardindex = random();
 
@@ -41,16 +46,25 @@ function App() {
 
     dispatch({type:'ADVGETCARD', payload:randomcard2[0]});
 
-    console.log(outofthedeck);
+    console.log(outofthedeck);}
 
   }
 
   const restart = () => {
 
     dispatch({type:'RESTART'});
+    window.location.reload();
 
 
   }
+
+  const checkgamestate = () => {
+  
+    console.log(deck.length);
+   if(deck.length<2){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'),window.location.reload()} 
+
+  }
+  
 
 
       return (
