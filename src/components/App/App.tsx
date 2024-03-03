@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 function App() {
 
 
-  const {deck, player, adversaire, outofthedeck, gameover} = useSelector((store:any) => store.deck)
+  const {deck, player, adversaire, outofthedeck, gameover, discard, exchange} = useSelector((store:any) => store.deck)
 
   const dispatch = useDispatch();
 
@@ -61,7 +61,7 @@ function App() {
   const checkgamestate = () => {
   
     console.log(deck.length);
-   if(deck.length<2){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'),window.location.reload()} 
+   if((deck.length<2)||(discard>8)||(exchange>8)){dispatch({type:'GAMEOVER'}), alert('gameover, please restart the game'),window.location.reload()} 
 
   }
   
@@ -69,8 +69,23 @@ function App() {
 
       return (
               
-        <>
-        
+        <div style={{textAlign:'center', marginTop:'5vh'}}>
+          
+          <ul style={{listStyle: 'none'}}><h2 style={{marginLeft:'-2vw'}}>Rules</h2>
+            <li>Click on one of your card to threw it to the central deck</li>
+            <li>Click on any adversaire card to trade the weakest card of your adversaire with your weakest card</li>
+            <li>Click on one of the central deck card to exchange one deck card with your weakest card</li>
+            <li>Game end when no card are left on the center deck or when player has used every discards or used every exchange</li>
+            <li>Highest score when gameover occur win</li>
+
+          </ul>
+
+
+          <p>Discard available: {10-discard}</p>
+
+          <p>Exchange available: {10-exchange}</p>
+
+
           <button type='button' onClick={getcard}>
 
             Get card
@@ -97,7 +112,7 @@ function App() {
 
             </button>
 
-          </>
+          </div>
 
         
         );
